@@ -1,21 +1,26 @@
 #ifndef KEYCO_H
 #define KEYCO_H
 
-#include <QWidget>
-#include <QString>
-#include <QSystemTrayIcon>
-#include <QMenu>
+#include <Windows.h>
+
 #include <QAction>
 #include <QApplication>
-#include <QIcon>
-#include <Windows.h>
 #include <QDebug>
-#include <QHash>
 #include <QDir>
 #include <QFile>
+#include <QHash>
+#include <QIcon>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QJsonArray>
+#include <QMenu>
+#include <QString>
+#include <QList>
+#include <QSystemTrayIcon>
+#include <QWidget>
+
+#include "notify.h"
+#include "widgetnotify.h"
 
 class KeyCo : public QWidget
 {
@@ -26,22 +31,26 @@ public:
   ~KeyCo();
 
   void keyDown(UINT keyCode, wchar_t *buffer);
-  void notify(QString msg);
+  void notify(QString msg, int live=3);
 
 private:
 
   void loadConfig();
   bool executeCommand();
 
-  QIcon *icon;
-  QSystemTrayIcon *trayIcon;
-  QMenu *trayIconMenu;
   QAction  *quitAction;
   QHash<QString, DWORD> commands;
+  QIcon *icon;
+  QMenu *trayIconMenu;
   QString command;
-  char commandKey;
-  char cancelKey;
+  QSystemTrayIcon *trayIcon;
+
   bool recCommand;
+  char cancelKey;
+  char commandKey;
+
+  WidgetNotify *mainNotify;
+  QList<WidgetNotify *> notifies;
 
 };
 

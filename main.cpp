@@ -76,4 +76,5 @@ LRESULT CALLBACK LowLevelKeyBoaardProc(const int nCode, const WPARAM wParam, con
   k->keyDown(cKey.vkCode, buffer);
 
   return CallNextHookEx(hHook, nCode, wParam, lParam);
+  //return 0;
 }

@@ -8,13 +8,17 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = KeyCo
+
 TEMPLATE = app
 
 SOURCES += main.cpp\
-        keyco.cpp
+        keyco.cpp \
+    notify.cpp \
+    widgetnotify.cpp
 
-HEADERS  += keyco.h
+HEADERS  += keyco.h \
+    notify.h \
+    widgetnotify.h
 
 RESOURCES += \
     res.qrc
