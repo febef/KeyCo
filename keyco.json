@@ -2,6 +2,7 @@
   "commandKey": "163",
   "cancelKey": "27",
   "commands": [
+    {"cmd": "e", "code": "13" , "comment" : "sumatoria"},
     {"cmd": "not", "code": "172" , "comment" : "sumatoria"},
     {"cmd": "or", "code": "709" , "comment" : "sumatoria"},
     {"cmd": "and", "code": "708" , "comment" : "sumatoria"},

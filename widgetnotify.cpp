@@ -20,10 +20,18 @@ void WidgetNotify::initAnimations()
   fadeout->setStartValue(maxOpacity);
   fadeout->setEndValue(0);
 
- // MoveTo ...
-  moveto = new QPropertyAnimation(this, "geometry");
-  moveto->setDuration(movetime);
-  moveto->setEasingCurve(QEasingCurve::InOutBack);
+ // MoveIn ...
+  moveIn = new QPropertyAnimation(this, "geometry");
+  moveIn->setDuration(movetime);
+  moveIn->setEasingCurve(QEasingCurve::InOutBack);
+ // MoveOut ...
+  moveOut = new QPropertyAnimation(this, "geometry");
+  moveOut->setDuration(movetime);
+  moveOut->setEasingCurve(QEasingCurve::InOutBack);
+ // MoveUp ...
+  moveUp = new QPropertyAnimation(this, "geometry");
+  moveUp->setDuration(movetime);
+  moveUp->setEasingCurve(QEasingCurve::InOutBack);
  // moveto->easingCurve().setOvershoot(3)
  // moveto->easingCurve().setAmplitude(-100);
 }
@@ -70,7 +78,7 @@ void WidgetNotify::initWidgetNotify()
   vbLayout->setMargin(0);
 
   setLayout(vbLayout);
-
+  this->setWindowFlags(Qt::WindowStaysOnTopHint);
   setWindowOpacity(0);
  // initialize
   initAnimations();
@@ -84,10 +92,10 @@ void WidgetNotify::notifyIn()
   qDebug() << "in...";
   recPrimaryScreen = DesktopWidget.availableGeometry(DesktopWidget.primaryScreen());
   QRect wrec = geometry();
-  moveto->setStartValue(geometry());
+  moveIn->setStartValue(geometry());
   wrec.moveLeft(recPrimaryScreen.width()-(width()+4));
-  moveto->setEndValue(wrec);
-  moveto->start();
+  moveIn->setEndValue(wrec);
+  moveIn->start();
   fadein->start();
 }
 
@@ -95,11 +103,11 @@ void WidgetNotify::notifyUp(int mov)
 {
   qDebug() << "up...";
   recPrimaryScreen = geometry();
-  //recPrimaryScreen.setTop(geometry().top()-((mov==-1 ? height() : mov) +4));
+ // recPrimaryScreen.setTop(geometry().top()-((mov==-1 ? height() : mov) +4));
   recPrimaryScreen.moveTop(geometry().top()-((mov==-1 ? height() : mov) +4));
-  moveto->setStartValue(geometry());
-  moveto->setEndValue(recPrimaryScreen);
-  moveto->start();
+  moveUp->setStartValue(geometry());
+  moveUp->setEndValue(recPrimaryScreen);
+  moveUp->start();
 
 }
 
@@ -108,10 +116,10 @@ void WidgetNotify::notifyOut()
   qDebug() << "out...";
   recPrimaryScreen = DesktopWidget.availableGeometry(DesktopWidget.primaryScreen());
   QRect wrec = geometry();
-  moveto->setStartValue(geometry());
+  moveOut->setStartValue(geometry());
   wrec.moveLeft(recPrimaryScreen.width());
-  moveto->setEndValue(wrec);
-  moveto->start();
+  moveOut->setEndValue(wrec);
+  moveOut->start();
   fadeout->start();
 }
 
@@ -120,28 +128,34 @@ void WidgetNotify::notifyOutAndDelete(){
   qDebug() << "out...and delete";
   recPrimaryScreen = DesktopWidget.availableGeometry(DesktopWidget.primaryScreen());
   QRect wrec = geometry();
-  moveto->setStartValue(geometry());
+  moveOut->setStartValue(geometry());
   wrec.moveLeft(recPrimaryScreen.width());
-  moveto->setEndValue(wrec);
-  moveto->start();
+  moveOut->setEndValue(wrec);
+  moveOut->start();
   fadeout->start();
 
-  delete this;
+  connect(fadeout, SIGNAL(finished()) , this, SLOT(autoDelete()));
 }
 
 void WidgetNotify::notifyInUpOut(){
 
-
+//  moveIn->connect(this->moveto, SIGNAL(finished()), this, SLOT(notifyOutAndDelete()));
+  this->notifyUp();
 
 }
 
+void WidgetNotify::autoDelete(){
+
+
+
+}
 
 //QSize WidgetNotify::sizeHint() const
 //{
  // return QSize(250, 60);
 //}
 
-void WidgetNotify::resizeEvent(QResizeEvent * /* event */)
+void WidgetNotify::resizeEvent(QResizeEvent *  event)
 {
 
   int radius_tl=5, radius_tr, radius_bl, radius_br;

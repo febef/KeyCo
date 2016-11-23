@@ -30,7 +30,7 @@ public:
   void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
 //  QSize sizeHint() const Q_DECL_OVERRIDE;
 
-  void WidgetNotify::initWidgetNotify();
+  void initWidgetNotify();
   void initAnimations();
 
   Notify data;
@@ -44,7 +44,7 @@ public:
   qreal maxOpacity;
   int fadetime, movetime;
   int live;
-  QPropertyAnimation *moveto, *fadein, *fadeout;
+  QPropertyAnimation *moveIn, *moveOut, *moveUp, *fadein, *fadeout;
 
 
 
