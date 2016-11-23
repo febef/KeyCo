@@ -78,7 +78,7 @@ void WidgetNotify::initWidgetNotify()
   vbLayout->setMargin(0);
 
   setLayout(vbLayout);
-  this->setWindowFlags(Qt::WindowStaysOnTopHint);
+  this->setWindowFlags(Qt::ToolTip | Qt::WindowStaysOnTopHint);
   setWindowOpacity(0);
  // initialize
   initAnimations();
