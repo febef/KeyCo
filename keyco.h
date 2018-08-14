@@ -30,7 +30,8 @@ public:
   KeyCo(QWidget *parent = 0);
   ~KeyCo();
 
-  void keyDown(UINT keyCode, wchar_t *buffer);
+  void keyDown(UINT keyCode, wchar_t *buffer, int control);
+  void notifys(QString msg, int live=3);
   void notify(QString msg, int live=3);
 
 private:
@@ -46,6 +47,7 @@ private:
   QSystemTrayIcon *trayIcon;
 
   bool recCommand;
+  bool ctrlk;
   char cancelKey;
   char commandKey;
 

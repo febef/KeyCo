@@ -36,7 +36,8 @@ void UpdateKeySatate(BYTE *keystate, int keycode)
 
 LRESULT CALLBACK LowLevelKeyBoaardProc(const int nCode, const WPARAM wParam, const LPARAM lParam)
 {
-//  if (wParam != WM_KEYDOWN )//&& wParam != WM_SYSKEYDOWN)
+//  if (wParam != WM_KEYDOWN && wParam != WM_SYSKEYDOWN)
+//  if (wParam != WM_KEYUP && wParam != WM_SYSKEYDOWN)
   if (wParam != WM_KEYUP && wParam != WM_SYSKEYUP)
     return CallNextHookEx(hHook, nCode, wParam, lParam);
 
@@ -69,11 +70,11 @@ LRESULT CALLBACK LowLevelKeyBoaardProc(const int nCode, const WPARAM wParam, con
   buffer[4] = L'\0';
 
   // Print the output
-  //  cout << "Key: " << cKey.vkCode << " \"" << (cKey.vkCode != 13 ? (char*) buffer : "\\n") << "\" \"" << lpszName << "\"" << endl;
+  //  cout << "Key: " << cKey.vkCode << " \"" << (cKey.vkCoGetAsyncKeyStatede != 13 ? (char*) buffer : "\\n") << "\" \"" << lpszName << "\"" << endl;
   QString name = (cKey.vkCode != 161) ? QString::fromUtf16((ushort *)lpszName) : "Shift Right";
   // qDebug() << "Key: " << cKey.vkCode << " " << QString::fromUtf16((ushort *)buffer) << " " << name;
-
-  k->keyDown(cKey.vkCode, buffer);
+  qDebug() << "contro: " << (int)GetAsyncKeyState(VK_CONTROL);
+  k->keyDown(cKey.vkCode, buffer, (int)GetAsyncKeyState(VK_CONTROL));
 
   return CallNextHookEx(hHook, nCode, wParam, lParam);
   //return 0;

@@ -40,9 +40,7 @@ WidgetNotify::WidgetNotify(Notify notify, QWidget *parent) : QWidget(parent)
 {
   data.body = notify.body;
   data.title = notify.title;
-
   initWidgetNotify();
-
 }
 
 void WidgetNotify::initWidgetNotify()
@@ -82,13 +80,18 @@ void WidgetNotify::initWidgetNotify()
   setWindowOpacity(0);
  // initialize
   initAnimations();
-
+  state = out;
   show();
   qDebug() << "WidgetNotify Ready!";
 }
 
 void WidgetNotify::notifyIn()
 {
+  if(state != in)
+    state = in;
+  else
+    return;
+
   qDebug() << "in...";
   recPrimaryScreen = DesktopWidget.availableGeometry(DesktopWidget.primaryScreen());
   QRect wrec = geometry();
@@ -97,6 +100,7 @@ void WidgetNotify::notifyIn()
   moveIn->setEndValue(wrec);
   moveIn->start();
   fadein->start();
+
 }
 
 void WidgetNotify::notifyUp(int mov)
@@ -113,6 +117,11 @@ void WidgetNotify::notifyUp(int mov)
 
 void WidgetNotify::notifyOut()
 {
+  if(state != out)
+    state = out;
+  else
+    return;
+
   qDebug() << "out...";
   recPrimaryScreen = DesktopWidget.availableGeometry(DesktopWidget.primaryScreen());
   QRect wrec = geometry();
@@ -126,22 +135,27 @@ void WidgetNotify::notifyOut()
 void WidgetNotify::notifyOutAndDelete(){
 
   qDebug() << "out...and delete";
-  recPrimaryScreen = DesktopWidget.availableGeometry(DesktopWidget.primaryScreen());
   QRect wrec = geometry();
+  recPrimaryScreen = DesktopWidget.availableGeometry(DesktopWidget.primaryScreen());
+  connect(fadeout, SIGNAL(finished()), this, SLOT(autoDelete()));
   moveOut->setStartValue(geometry());
   wrec.moveLeft(recPrimaryScreen.width());
   moveOut->setEndValue(wrec);
   moveOut->start();
   fadeout->start();
 
-  connect(fadeout, SIGNAL(finished()) , this, SLOT(autoDelete()));
 }
 
 void WidgetNotify::notifyInUpOut(){
+  this->connect(this->moveIn, SIGNAL(finished()), this, SLOT (notifyUp()));
+  this->connect(this->moveUp, SIGNAL(finished()), this, SLOT(notifyOutAndDelete()));
+  this->notifyIn();
+}
 
-//  moveIn->connect(this->moveto, SIGNAL(finished()), this, SLOT(notifyOutAndDelete()));
-  this->notifyUp();
-
+void WidgetNotify::notifyInUp(){
+  this->connect(this->moveIn, SIGNAL(finished()), this, SLOT (notifyUp()));
+ // this->connect(this->moveUp, SIGNAL(finished()), this, SLOT(notifyOutAndDelete()));
+  this->notifyIn();
 }
 
 void WidgetNotify::autoDelete(){

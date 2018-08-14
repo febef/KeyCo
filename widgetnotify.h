@@ -18,7 +18,7 @@
 
 #include <QDebug>
 
-typedef enum {out=0, in=1} myWgtState;
+typedef enum {out=0, in=1, moving} myWgtState;
 
 class WidgetNotify : public QWidget
 {
@@ -51,6 +51,7 @@ public:
  signals:
 
  public slots:
+  void notifyInUp();
   void notifyInUpOut();
   void notifyIn();
   void notifyOut();

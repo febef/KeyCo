@@ -2,6 +2,7 @@
   "commandKey": "163",
   "cancelKey": "27",
   "commands": [
+    {"cmd": "gbr", "code": "57504" , "comment" : "sumatoria"},
     {"cmd": "e", "code": "13" , "comment" : "sumatoria"},
     {"cmd": "not", "code": "172" , "comment" : "sumatoria"},
     {"cmd": "or", "code": "709" , "comment" : "sumatoria"},

@@ -31,10 +31,11 @@ KeyCo::~KeyCo()
   delete icon;
 }
 
-void KeyCo::keyDown(UINT keyCode, wchar_t *buffer)
+void KeyCo::keyDown(UINT keyCode, wchar_t *buffer, int control)
 {
   if ((char)keyCode == cancelKey || command.count() > 5){
     recCommand = false;
+    ctrlk = false;
     mainNotify->notifyOut();
   }
   //if (command.count() == 0 && (char)keyCode != commandKey) return;
@@ -51,16 +52,20 @@ void KeyCo::keyDown(UINT keyCode, wchar_t *buffer)
     else
       command = command + (QString::fromUtf16((ushort*)buffer));
     mainNotify->body->setText(command);
+    ctrlk = ctrlk && (char)keyCode != commandKey;
+    ctrlk = ctrlk || control != 0;
     executeCommand();
   }
 
   qDebug() << "COMAND: " << command;
 }
 
-void KeyCo::notify(QString msg,int live)
+void KeyCo::notify(QString msg,int live){
+
+}
+
+void KeyCo::notifys(QString msg,int live)
 {
-
-
   // generar arreglo de notify
   // lansar en esta funcion un tiimer que llame a una funcion que
   // 1) si el arreglo de notify tiene elementos genere el primer wdgetnotify
@@ -83,14 +88,13 @@ void KeyCo::notify(QString msg,int live)
   ng.moveTop(ng.top() - ng.height() - 4);
   w->setGeometry(ng);
 
-    w->notifyInUpOut();
-
-
+  w->notifyInUp();
 }
 
 void KeyCo::loadConfig()
 {
   recCommand = false;
+  ctrlk = false;
 
   QFile file(QApplication::applicationDirPath() + "\\keyco.json");
   QString strCfg;
@@ -120,7 +124,7 @@ void KeyCo::loadConfig()
     }
 
   }else{
-    notify("no load config!");
+    this->notify("no load config!");
 
     cancelKey = 27; // escape
     commandKey = 163; // right control
@@ -128,6 +132,8 @@ void KeyCo::loadConfig()
     commands.insert("N~", 0x00d1);
     commands.insert("n~", 0x00f1);
   }
+  notify("hola1");
+  notify("hola2..");
 }
 
 bool KeyCo::executeCommand()
@@ -142,8 +148,8 @@ bool KeyCo::executeCommand()
   ip.ki.time = 0;
   ip.ki.dwExtraInfo = 0;
 
-  int count = command.count();
-
+  int count = command.count() + (ctrlk ? -1 : 0);
+  ctrlk =false;
   for (int i=0; i < count; i++){
     ip.ki.dwFlags = KEYEVENTF_UNICODE;
     ip.ki.wVk = 8;
